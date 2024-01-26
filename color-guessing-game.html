@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <title>Color Guessing Game</title>
+    <style>
+        /*COMMENTED OUT STYLE SHEET ELEMENTS BELOW AS NOT VERY APPLICABLE IN THIS SPECIFIC CASE DUE TO NATURE OF JAVASCRIPT BASED COLOR GAME. */
+
+        /*body {
+            background-color: greenyellow;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .primary-button {
+            background-color: red;
+            color: white;
+            font-size: 24px;
+        }
+
+        .sexy-title {
+            color: orange;
+            font-weight: bold;
+            font-size: 42px;
+        }
+
+        .less-sexy-subtitle {
+            color: blue;
+            font-style: italic;
+            font-size: 32px;
+        }*/
+    </style>
+</head>
+
+<body>
+    <h1 class="sexy-title">Color Guessing Game</h1>
+    <h3 class="less-sexy-subtitle">- A game about guessing colors</h3>
+    <button type="button" class=primary-button onclick="runGame()">Start Game</button>
+
+    <script> // Note: For convenience of practice workshop we have not called the JS here from a seperate module. However we know clearly that is best practice IRL.  
+
+        // Step: establish array of colors as a global. (Note: See how JS preferred syntax is to use 'screaming snake case' for global variables. 
+        const COLORS_ARRAY = ['blue', 'cyan', 'gold', 'gray', 'green', 'magenta', 'orange', 'red', 'white', 'yellow'];
+
+        // Step: establish our main 'runGame()' function (to be called onClick).  
+        function runGame() {
+            // declare and initialze required baisc variables to meet with the goals/needs of our desired game logic.  
+            let correct = false; // default to false so that can adjust to true upon user guessing correct array color. 
+
+            let userGuess = ''; // temporarily initializing guess to contian value of an empty string.. Per wkshp instructions at start of section 3. 
+            let numTries = 0;
+
+            const maxIndex = ((COLORS_ARRAY.length) - 1);  // creating a variable containing a max usable index for the array (array.length -1). 
+            const targetIndex = (Math.floor((Math.random()) * maxIndex + 1)); // randomly establish within constraints of the target array a target index value. note: we add the last + 1 in order to facilitate a chance for index value representing the last element of our target array to actually come up (as we are utilizing 'Math.floor' to establish our integer)
+            alert("targetIndex has been set to: " + targetIndex);// Personal Note: had a bunch of issues attempting to debug previously when I  accidently set 'targetIndex' to a NaN. Uncomment this alert if you want to check what value 'targetIndex' has been set to (and thus whether it is changing at random as intedned and also a number that is viable to be present in the given array) via an alert in the browser 
+
+            do {
+                rawGuess = prompt('I am thinking of one of these colors:\n\n' + COLORS_ARRAY.join(', ') + '\n\nWhat color am I thinking of?\n'); //prompt user to guess a color.. format the array using join method to provide a comma and space after each element to be displayed from the array.
+                userGuess = rawGuess;
+                userGuess = userGuess.toLowerCase();
+                numTries++;
+
+                if (rawGuess === null) {
+                    alert('No valid guess was made and the game was canceled. Thank You.');
+                    return; // if rawGuess === null (as in user has tried to cancel prompt, blank return here simply results in us exiting teh loop and the enitre runGame() function.)
+                }
+                else {
+                    alert('We are now checking your guess!\n\nPlease Standby! :)');
+                    correct = checkGuess(userGuess, targetIndex); // For each pass of do while loop per runGame(engaged) we will have a consistant 'target' value passeed into the checkGuess function but a different 'guess' value. checkGuess() will take in these areguments, retun some useful info to the guessing user (if necessary) and finally return a boolean value of 'true' when the user guesses the correct color/value. here our 'correct' variable is then assigned to true and our do while loop will exit. (see line below) 
+                }
+            }
+            while (correct !== true); // Do while loop exits as soon as our correct variable holds a boolean value of 'true'. For each iteration of this loop checkGuess will be called.    
+
+            alert('Congratulations! You found the right color of: ' + userGuess + '.\n\nYou guessed correctly after ' + numTries + ' tries!');
+            document.body.style.background = userGuess; // set the background color to the random color that was targeted from the array upon user having just guessed it correctly. 
+        }
+
+        // Step: establish checkGuess() function (to be called from runGame() upon need to run user's guess against the rarget color contained within the array (and randomly selected and assigend to target)
+        function checkGuess(passedGuess, passedTarget) {
+            let correct = false; // note with this function being modularized fully seperately from 'runGame()' we  need to also establish a 'correct' varibale here also as our previously estalished 'correct' variable is limited to the scope of 'runGame()'. 
+
+            if (!(COLORS_ARRAY.includes(passedGuess))) {
+                alert('The guess you made was not a viable color from the list that was presented.\n\nPlease guess again, this time picking a color from the given list. :)');
+                return (correct);
+            }
+            else if ((COLORS_ARRAY.indexOf(passedGuess)) > passedTarget) {
+                alert('The color you guessed is not the one I was thinking of.\n\nHint: The correct color comes earlier alphabetically!');
+                return (correct);
+            }
+            else if ((COLORS_ARRAY.indexOf(passedGuess)) < passedTarget) {
+                alert('The color you guessed is not the one I was thinking of.\n\nHint: The correct color comes later alphabetically!');
+                return (correct);
+            }
+            else {
+                alert('hmmm...  Is that correct?..')
+                return true
+            }
+        }
+
+    </script>
+</body>
